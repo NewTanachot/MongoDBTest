@@ -1,10 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
+using MongoDBTest.Models;
 using MongoDBTest.MongoDB;
 using MongoDBTest.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.Configure<DooProjectMongoDbSetting>(
+    builder.Configuration.GetSection("DooProjectMongoDb"));
 
 builder.Services.AddSingleton(typeof(MongoDbConnection<>));
 builder.Services.AddSingleton(typeof(CRUDServices<>));

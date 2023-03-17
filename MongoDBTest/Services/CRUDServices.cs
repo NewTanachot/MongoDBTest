@@ -21,15 +21,15 @@ namespace MongoDBTest.Services
         public async Task<List<T>> LoadRecordAsync(CollectionsList collectionName, string? id = null)
         {
             var collection = mongoDb.GetCollection(collectionName);
+            var filter = Builders<T>.Filter.Empty;
 
             if (id != null)
             {
-                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
-
-                return await collection.Find(filter).ToListAsync();
+                filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
             }
 
-            return await collection.Find(x => true).ToListAsync();
+            var findTask = collection.Find(filter);
+            return await findTask.Limit(1000).ToListAsync();
         }
 
         public async Task InsertRecordAsync(CollectionsList collectionName, T record)

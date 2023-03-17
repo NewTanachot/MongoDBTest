@@ -40,7 +40,7 @@ namespace MongoDBTest.Controllers
                 ProductType = productType
             });
 
-            return Ok(new { Success = "Create product done." });
+            return Ok(new { Success = "Insert product done." });
         }
 
         [HttpPost("[action]")]
@@ -60,7 +60,7 @@ namespace MongoDBTest.Controllers
             }
 
             await productServices.InsertRecordAsync(CollectionsList.Product, products);
-            return Ok(new { Success = "Create product done." });
+            return Ok(new { Success = "Insert product done." });
         }
 
         [HttpPut("[action]")]
@@ -73,7 +73,7 @@ namespace MongoDBTest.Controllers
                 ProductDescription = productDescription
             });
 
-            return Ok(new { Success = "Update or Create product done." });
+            return Ok(new { Success = "Update or Insert product done." });
         }
 
         [HttpDelete("[action]")]

@@ -1,18 +1,19 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MongoDBTest.Models;
 
 namespace MongoDBTest.MongoDB
 {
     public class MongoDbConnection<T>
     {
-        private readonly string DatabaseName = "DooProject";
-
         public IMongoDatabase MongoDb { get; }
 
-        public MongoDbConnection()
+        public MongoDbConnection(IOptions<DooProjectMongoDbSetting> options)
         {
-            var client = new MongoClient();
-            MongoDb = client.GetDatabase(DatabaseName);
+            var client = new MongoClient(options.Value.ConnectionString);
+            MongoDb = client.GetDatabase(options.Value.DatabaseName);
         }
+
         public IMongoCollection<T> GetCollection(CollectionsList collectionName)
         {
             return MongoDb.GetCollection<T>(collectionName.ToString());
