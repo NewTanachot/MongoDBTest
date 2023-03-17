@@ -18,13 +18,13 @@ namespace MongoDBTest.Services
             this.logger = logger;
         }
 
-        public async Task<List<T>> LoadRecordAsync(CollectionsList collectionName, Guid? id = null)
+        public async Task<List<T>> LoadRecordAsync(CollectionsList collectionName, string? id = null)
         {
             var collection = mongoDb.GetCollection(collectionName);
 
             if (id != null)
             {
-                var filter = Builders<T>.Filter.Eq("_id", id);
+                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
 
                 return await collection.Find(filter).ToListAsync();
             }
@@ -44,10 +44,10 @@ namespace MongoDBTest.Services
             await collection.InsertManyAsync(records, new InsertManyOptions { IsOrdered = false });
         }
 
-        public async Task CreateOrUpdateRecordAsync(CollectionsList collectionName, Guid id, T record)
+        public async Task CreateOrUpdateRecordAsync(CollectionsList collectionName, string id, T record)
         {
             var collection = mongoDb.GetCollection(collectionName);
-            var filter = Builders<T>.Filter.Eq("_id", id);
+            var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
 
             var updateOption = new ReplaceOptions
             {
@@ -57,10 +57,10 @@ namespace MongoDBTest.Services
             await collection.ReplaceOneAsync(filter, record, updateOption);
         }
 
-        public async Task DeleteRecordAsync(CollectionsList collectionName, Guid id)
+        public async Task DeleteRecordAsync(CollectionsList collectionName, string id)
         {
             var collection = mongoDb.GetCollection(collectionName);
-            var filter = Builders<T>.Filter.Eq("_id", id);
+            var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
 
             await collection.DeleteOneAsync(filter);
         }

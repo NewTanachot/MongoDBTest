@@ -27,15 +27,17 @@ namespace MongoDBTest.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetProduct(string id)
         {
-            return Ok(await productServices.LoadRecordAsync(CollectionsList.Product, new Guid(id)));
+            return Ok(await productServices.LoadRecordAsync(CollectionsList.Product, id));
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> InsertProduct(string productName)
+        public async Task<IActionResult> InsertProduct(string productName, string? productDiscription = null, string? productType = null)
         {
             await productServices.InsertRecordAsync(CollectionsList.Product, new Product
             {
-                ProductName = productName
+                ProductName = productName,
+                ProductDescription = productDiscription,
+                ProductType = productType
             });
 
             return Ok(new { Success = "Create product done." });
@@ -52,7 +54,8 @@ namespace MongoDBTest.Controllers
                 products.Add(new Product
                 {
                     ProductName = "Product_" + i,
-                    ProductDescription = "Test_" + i
+                    ProductDescription = "Test_" + i,
+                    ProductType = "Type_" + i
                 });
             }
 
@@ -63,11 +66,9 @@ namespace MongoDBTest.Controllers
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateProduct(string id, string? productName = null, string? productDescription = null)
         {
-            var guidId = new Guid(id);
-
-            await productServices.CreateOrUpdateRecordAsync(CollectionsList.Product, guidId, new Product
+            await productServices.CreateOrUpdateRecordAsync(CollectionsList.Product, id, new Product
             {
-                ProductId = guidId,
+                ProductId = id,
                 ProductName = productName,
                 ProductDescription = productDescription
             });
@@ -78,7 +79,7 @@ namespace MongoDBTest.Controllers
         [HttpDelete("[action]")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
-            await productServices.DeleteRecordAsync(CollectionsList.Product, new Guid(id));
+            await productServices.DeleteRecordAsync(CollectionsList.Product, id);
             return Ok(new { Success = "Delete product done." });
         }
 
